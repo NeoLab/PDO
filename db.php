@@ -30,7 +30,7 @@ class DB extends Error{
             $dsn="mysql:dbname=".DB_NAME.";host=".DB_HOST;
             $this->db = new PDO($dsn, DB_USER, DB_PASS);
             $this->db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
-            $this->db->query('SET NAMES GBK');
+            $this->db->query('SET NAMES utf8');
         } catch (PDOException $e) {
             print "Error!: " . $e->getMessage() . "<br/>";
             die();
@@ -79,6 +79,7 @@ class DB extends Error{
                 $ret[$key]=$this->prep_vars($value);
         }
         elseif(is_object($vars)){
+            $ret = new stdClass();
             foreach($vars as $key=>$value)
                 $ret->$key=$this->prep_vars($value);
         }
@@ -226,7 +227,7 @@ class DB extends Error{
     }
     
     // get the number of records matching the requirements
-    function get_count($table,$where=false){
+    function get_count($table,$where=array()){
         
         // start query
         $this->sql="SELECT COUNT(*) c FROM ".$table;
